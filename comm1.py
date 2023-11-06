@@ -61,6 +61,7 @@ if __name__ == "__main__":
     data_packet_manager.generate_packets_from_file(input_file_path)
     data_packet_manager.write_packets_to_file(output_file_path)
 
+
     read_packets = data_packet_manager.read_packets_from_file(output_file_path)
     for i, packet in enumerate(read_packets):
         packet_number, total_length, total_packets, data = data_packet_manager.parse_data_packet(packet)
