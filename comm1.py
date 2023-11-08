@@ -1,3 +1,5 @@
+from math import ceil
+import os
 import struct
 
 class DataPacketManager:
@@ -9,7 +11,7 @@ class DataPacketManager:
 
     def create_data_packet(self, packet_number, total_length, total_packets, data):
         if isinstance(data, str):
-            data_bytes = data.encode('utf-8')
+            data_bytes = data.encode()
         else:
             data_bytes = data
         packet = struct.pack(self.packet_format, packet_number, total_length, total_packets, data_bytes)
@@ -17,12 +19,13 @@ class DataPacketManager:
 
     def parse_data_packet(self, packet):
         packet_number, total_length, total_packets, data_bytes = struct.unpack(self.packet_format, packet)
-        data = data_bytes.decode()
-        return packet_number, total_length, total_packets, data
+        #data = data_bytes.decode()
+        return packet_number, total_length, total_packets, data_bytes
 
     def generate_packets_from_file(self, file_path):
         self.packets = []
-
+        file_size = os.path.getsize(file_path)
+        
         with open(file_path, 'rb') as file:
             packet_number = 1
 
@@ -32,22 +35,26 @@ class DataPacketManager:
                     break
 
                 total_length = len(data) + struct.calcsize(self.packet_format)
-                self.total_packets += 1
+                self.total_packets =ceil(file_size/32)
 
                 packet = self.create_data_packet(packet_number, total_length, self.total_packets, data)
                 self.packets.append(packet)
                 packet_number += 1
+                
 
     def write_packets_to_file(self, output_file_path):
         with open(output_file_path, 'wb') as output_file:
             for packet in self.packets:
                 output_file.write(packet)
-
+    def size(self):
+        return struct.calcsize(self.packet_format)
+        
     def read_packets_from_file(self, file_path):
         with open(file_path, 'rb') as file:
             read_packets = []
             while True:
                 packet = file.read(struct.calcsize(self.packet_format))
+                print(packet)
                 if not packet:
                     break
                 read_packets.append(packet)

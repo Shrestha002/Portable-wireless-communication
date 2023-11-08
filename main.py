@@ -1,17 +1,17 @@
 import serial
 import time
 import comm1
-
+data_packet_manager = comm1.DataPacketManager()
 def send_file_to_serial_port(file_path, serial_port, baudrate):
     try:
-        data_packet_manager = comm1.DataPacketManager()
+        
         data_packet_manager.generate_packets_from_file(file_path)
         data_packet_manager.write_packets_to_file("output_packets.dat")
 
         ser = serial.Serial(port=serial_port, baudrate=baudrate)
         with open("output_packets.dat", "rb") as file:
             while True:
-                chunk = file.read(64)
+                chunk = file.read(data_packet_manager.size())
                 if not chunk:
                     break
                 ser.write(chunk)
@@ -25,19 +25,22 @@ def receive_file_from_serial_port(file_path, serial_port, baudrate):
     try:
         ser = serial.Serial(port=serial_port, baudrate=baudrate)
         received_data = bytearray()
-
+        file=open(file_path, "wb")
         while True:
-            data = ser.read(64)
-            if not data:
+            packet = ser.read(data_packet_manager.size())
+            #print(packet)
+            if not packet:
                 break
-            received_data.extend(data)
+            received_data.extend(packet)
+            packet_number, total_length, total_packets, data_bytes = data_packet_manager.parse_data_packet(packet)
+            #print(f"Read Packet {packet_number}: Total Length={total_length}, Total Packets={total_packets}, Data={data}")
 
-        ser.close()
-
-        with open(file_path, "wb") as file:
-            file.write(received_data)
-
-        print(f"File received and saved to {file_path}.")
+            file.write(data_bytes)
+            if(packet_number==total_packets):
+                print(f"File received and saved to {file_path}.")
+                file.close()
+                ser.close()
+                break
     except Exception as e:
         print(f"Error: {str(e)}")
 
