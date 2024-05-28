@@ -1,0 +1,15 @@
+<RCC>
+  <qresource prefix="Assets">
+    <file>assets/binder.png</file>
+    <file>assets/clip.png</file>
+    <file>assets/hotspot.png</file>
+    <file>assets/loupe.png</file>
+    <file>assets/refresh.png</file>
+    <file>assets/mic.png</file>
+    <file>assets/search.png</file>
+    <file>assets/send (1).png</file>
+    <file>assets/send.png</file>
+    <file>assets/wifi.png</file>
+    <file>assets/wifi-signal.png</file>
+  </qresource>
+</RCC>
