@@ -1,0 +1,15 @@
+<RCC>
+  <qresource prefix="newPrefix">
+    <file>bground1.png</file>
+    <file>binder.png</file>
+    <file>clip.png</file>
+    <file>hotspot.png</file>
+    <file>loupe.png</file>
+    <file>mic.png</file>
+    <file>search.png</file>
+    <file>send (1).png</file>
+    <file>send.png</file>
+    <file>wifi.png</file>
+    <file>wifi-signal.png</file>
+  </qresource>
+</RCC>
